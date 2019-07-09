@@ -1,0 +1,52 @@
+﻿<Window x:Class="WPFUtility.Demo.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WPFUtility.Demo"
+        xmlns:wpfUtility="clr-namespace:WPFUtility;assembly=WPFUtility"
+        xmlns:Interactions="http://schemas.microsoft.com/xaml/behaviors"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <Grid>
+        <TabControl>
+            <TabItem Header="Path Changes">
+                <TabItem.DataContext>
+                    <local:PathViewModel></local:PathViewModel>
+                </TabItem.DataContext>
+                <StackPanel>
+                    <TextBox  Text="{Binding Path=Path, Source={x:Static Application.Current}, Mode=TwoWay}"></TextBox>
+                    <ItemsControl ItemsSource="{Binding Collection}"></ItemsControl>
+                </StackPanel>
+
+            </TabItem>
+            <TabItem Header="TextEditor">
+                <StackPanel>
+
+                    <Rectangle x:Name="Rectangle" Height="30" Width="70"></Rectangle>
+                    <wpfUtility:RichTextEditor >
+                        <Interactions:Interaction.Triggers>
+                            <Interactions:EventTrigger EventName="ObjectChange">
+                                <wpfUtility:SetPropertyAction PropertyName="Fill" TargetObject="{Binding ElementName=Rectangle}" >
+                                    <wpfUtility:SetPropertyAction.PropertyValue>
+                                        <RadialGradientBrush 
+                                            GradientOrigin="0.5,0.5" 
+                                            Center="0.5,0.5" RadiusX="0.5" RadiusY="0.5">
+                                            <RadialGradientBrush.GradientStops>
+                                                <GradientStop Color="Yellow" Offset="0" />
+                                                <GradientStop Color="Red" Offset="0.25" />
+                                                <GradientStop Color="Blue" Offset="0.75" />
+                                                <GradientStop Color="Green" Offset="1" />
+                                            </RadialGradientBrush.GradientStops>
+                                        </RadialGradientBrush>
+                                    </wpfUtility:SetPropertyAction.PropertyValue>
+                                </wpfUtility:SetPropertyAction>
+                            </Interactions:EventTrigger>
+                       
+                        </Interactions:Interaction.Triggers>
+                    </wpfUtility:RichTextEditor>
+                </StackPanel>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</Window>
