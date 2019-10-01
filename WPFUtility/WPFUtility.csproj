@@ -2,9 +2,6 @@
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
-    <BaseDir>"C:\Program Files (x86)\NuGet\Visual Studio 2015\nuget.exe"</BaseDir>
-    <BuildDir>$(ProjectDir)WPFUtility.csproj</BuildDir>
-    <PackagesDir>C:\Users\declan.taylor\OneDrive - ChartCo Ltd\Documents\Visual Studio 2015\Packages\</PackagesDir>
     <PackageName>$(ProjectDir)$(ProjectName).*.nupkg</PackageName>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -77,10 +74,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Command\OpenCommand.cs" />
+    <Compile Include="Contracts\IObjectChangeEvent.cs" />
+    <Compile Include="Contracts\IObjectChangeEventCommand.cs" />
+    <Compile Include="Contracts\IHasCommand.cs" />
     <Compile Include="Control\Text\RichTextBoxEx.cs" />
     <Compile Include="Control\Text\RichTextEditor.cs" />
     <Compile Include="Control\Text\TextBoxEx.cs" />
-    <Compile Include="EventArgs\FileObjectChangedEventArgs.cs" />
+    <Compile Include="EventArgs\ObjectChangeEventArgs.cs" />
+    <Compile Include="EventArgs\RoutedObjectChangeEventHandler.cs" />
+    <Compile Include="DocumentObject.cs" />
     <Compile Include="Interactivity\SetPropertyAction.cs" />
     <Compile Include="ViewModel\ValidationViewModelBase.cs" />
     <Page Include="Themes\Generic.xaml">
@@ -130,22 +132,35 @@
   <Target Name="AfterBuild">
     <!--<Copy SourceFiles="$(OutDir)MvvmValidation.xml" DestinationFolder="C:\Users\declan.taylor\" ContinueOnError="true" />-->
   </Target>
-  <Target Name="Up" AfterTargets="AfterBuild">
+  <PropertyGroup>
+    <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
+  </PropertyGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Target Name="RunWhenBuild" AfterTargets="CoreBuild" Condition="'$(_AssemblyTimestampBeforeCompile)'!='$(_AssemblyTimestampAfterCompile)'">
+    <Message Importance="high" Text="RunWhenBuild!!" />
     <PropertyGroup>
       <KTools>"$(ProjectDir)KTools.Version1up.ps1"</KTools>
     </PropertyGroup>
     <Exec Command="C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe ^&#xD;&#xA;-ExecutionPolicy ByPass ^&#xD;&#xA;-File $(KTools)" />
   </Target>
-  <Target Name="CopyPackage" AfterTargets="Up">
+  <Target Name="CopyPackage" AfterTargets="RunWhenBuild">
     <PropertyGroup>
-      <CopyMessage>"Copying to package directory"</CopyMessage>
+      <BaseDir>"C:\Program Files (x86)\NuGet\Visual Studio 2015\nuget.exe"</BaseDir>
+      <BuildDir>"$(ProjectDir)WPFUtility.csproj"</BuildDir>
+      <PackagesDir>C:\Users\declan.taylor\OneDrive - ChartCo Ltd\Documents\Visual Studio 2015\Packages\</PackagesDir>
+      <CopyMessage>Copying to package directory:</CopyMessage>
     </PropertyGroup>
     <ItemGroup>
-      <NugetPackages Include="$(ProjectDir)$(ProjectName)*nupkg" />
+      <BuiltPackages Include="$(ProjectDir)$(ProjectName)*nupkg" />
+      <ExistingPackages Include="$(PackagesDir)*.*" />
+      <Packages Include="@(BuiltPackages)" Exclude="@(ExistingPackages -> '$(ProjectDir)%(FileName)%(Extension)')" />
     </ItemGroup>
     <Exec Command="$(BaseDir) pack $(BuildDir)" />
     <Message Importance="High" Text="$(CopyMessage)" />
-    <Copy SourceFiles="@(NugetPackages)" DestinationFolder="$(PackagesDir)" />
+    <!-- <Message Text="@(Packages)" Importance="high"/> -->
+    <Message Text="@(BuiltPackages)" Importance="high" />
+    <Message Text="$(ProjectDir)$(ProjectName)" Importance="high" />
+    <Copy SourceFiles="@(Packages)" DestinationFolder="$(PackagesDir)" />
   </Target>
   <!--> <PropertyGroup>
   <PostBuildEvent>

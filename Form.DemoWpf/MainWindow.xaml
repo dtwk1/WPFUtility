@@ -15,51 +15,54 @@
 
             <sys:Boolean x:Key="true">True</sys:Boolean>
             <sys:Boolean x:Key="false">False</sys:Boolean>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/OpenSaveTextWpf;component/Themes/Form.xaml"></ResourceDictionary>
-            </ResourceDictionary.MergedDictionaries>
-      
         </ResourceDictionary>
     </Window.Resources>
-    <DockPanel>
-        <ToolBar DockPanel.Dock="Top" >
-            <ToggleButton Width="100" Height="30" Content="Valid" >
-                <Interactions:Interaction.Triggers>
-                    <Interactions:EventTrigger EventName="Checked">
-                        <wpfUtility:SetPropertyAction PropertyName="IsValid" TargetObject="{Binding ElementName=ValidityControl}" PropertyValue="{StaticResource true}"/>
-                    </Interactions:EventTrigger>
-                    <Interactions:EventTrigger EventName="Unchecked">
-                        <wpfUtility:SetPropertyAction PropertyName="IsValid" TargetObject="{Binding ElementName=ValidityControl}" PropertyValue="{StaticResource false}"/>
-                    </Interactions:EventTrigger>
-                </Interactions:Interaction.Triggers>
-                <ToggleButton.Style>
-                    <Style TargetType="{x:Type ToggleButton}">
-                        <Setter Property="Content" Value="Valid"/>
-                        <Style.Triggers>
-                            <Trigger Property="IsChecked" Value="True">
-                                <Setter Property="Content" Value="InValid"/>
-                                <Setter Property="Foreground" Value="Red"/>
-                            </Trigger>
-                        </Style.Triggers>
-                    </Style>
-                </ToggleButton.Style>
-            </ToggleButton>
-        </ToolBar>
-        <StackPanel>
-            <StackPanel.Resources>
-                <viewModel:FormViewModel x:Key="FormViewModel"></viewModel:FormViewModel>
-            </StackPanel.Resources>
-            <!--Validator="{Binding Source={StaticResource FormViewModel}, Path=Validator}"-->
-            <wpfUtility:ValidityControl x:Name="ValidityControl"  IsValid="{Binding IsValid}" d:DataContext="{Binding Source={StaticResource FormViewModel}}">
-                <wpfUtility:ValidityControl.DataContext>
+
+
+
+    <TabControl>
+        <TabItem Header="Main">
+            <Grid d:DataContext="{Binding Source={StaticResource FormViewModel}}">
+                <Grid.Resources>
+                    <viewModel:FormViewModel x:Key="FormViewModel"></viewModel:FormViewModel>
+                </Grid.Resources>
+                <Grid.DataContext>
                     <Binding Source="{StaticResource FormViewModel}"></Binding>
-                </wpfUtility:ValidityControl.DataContext>
-                <wpfUtility:ValidityControl.Content>
-                    <!--<buttonsControl:Form></buttonsControl:Form>-->
-                    <ContentPresenter Content="{StaticResource FormViewModel}" ContentTemplate="{StaticResource FormDataTemplate}"></ContentPresenter>
-                    <!--<Ellipse Fill="Red" Width="100" Height="100"></Ellipse>-->
-                </wpfUtility:ValidityControl.Content>
-            </wpfUtility:ValidityControl>
-        </StackPanel>
-    </DockPanel>
+                </Grid.DataContext>
+                <wpfUtility:ValidityControl  IsValid="{Binding IsValid}" >
+                    <wpfUtility:ValidityControl.Content>
+                        <ContentPresenter Content="{StaticResource FormViewModel}" ></ContentPresenter>
+                    </wpfUtility:ValidityControl.Content>
+                </wpfUtility:ValidityControl>
+            </Grid>
+        </TabItem>
+        <TabItem Header="Secondary">
+            <DockPanel>
+                <ToolBar DockPanel.Dock="Top" >
+                    <ToggleButton Width="100" Height="30" Content="Valid" >
+                        <Interactions:Interaction.Triggers>
+                            <Interactions:EventTrigger EventName="Checked">
+                                <wpfUtility:SetPropertyAction PropertyName="IsValid" TargetObject="{Binding ElementName=ValidityControl}" PropertyValue="{StaticResource true}"/>
+                            </Interactions:EventTrigger>
+                            <Interactions:EventTrigger EventName="Unchecked">
+                                <wpfUtility:SetPropertyAction PropertyName="IsValid" TargetObject="{Binding ElementName=ValidityControl}" PropertyValue="{StaticResource false}"/>
+                            </Interactions:EventTrigger>
+                        </Interactions:Interaction.Triggers>
+                        <ToggleButton.Style>
+                            <Style TargetType="{x:Type ToggleButton}">
+                                <Setter Property="Content" Value="Valid"/>
+                                <Style.Triggers>
+                                    <Trigger Property="IsChecked" Value="True">
+                                        <Setter Property="Content" Value="InValid"/>
+                                        <Setter Property="Foreground" Value="Red"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ToggleButton.Style>
+                    </ToggleButton>
+                </ToolBar>
+                <wpfUtility:ValidityControl x:Name="ValidityControl" />
+            </DockPanel>
+        </TabItem>
+    </TabControl>
 </Window>

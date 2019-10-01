@@ -23,15 +23,12 @@ namespace WPFUtility.Demo.Properties {
             }
         }
         
-        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("c:\\Temp")]
-        public string Path {
+        public string Title {
             get {
-                return ((string)(this["Path"]));
-            }
-            set {
-                this["Path"] = value;
+                return ((string)(this["Title"]));
             }
         }
     }

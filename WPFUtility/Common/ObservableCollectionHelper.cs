@@ -9,6 +9,7 @@ namespace WPFUtility
     {
         public static ObservableCollection<T> ToObservableCollection<T>(this IEnumerable<T>  enumerable)
         {
+
             return new ObservableCollection<T>(enumerable);
         }
     }

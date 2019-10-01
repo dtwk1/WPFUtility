@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Windows;
 using System.Windows.Controls;
@@ -24,7 +23,8 @@ namespace WPFUtility
 
         public ButtonsBase()
         {
-            this.serviceSubject.CombineLatest(this.buttonsSubject, (a,b)=>new {a,b}).Subscribe(_ => Change(_.a,_.b));
+            this.buttonsSubject.WithLatestFrom(this.serviceSubject, (a,b)=>new {b=a,a=b})
+                .Subscribe(_ => this.PropertyChange(_.a, _.b));
 
         }
 
@@ -34,7 +34,7 @@ namespace WPFUtility
 
         }
 
-        protected abstract void Change(object service, Dictionary<string, Button> dictionary);
+        protected abstract void PropertyChange(object service, Dictionary<string, Button> dictionary);
     
 
         public object Service

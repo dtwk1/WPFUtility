@@ -11,7 +11,15 @@ namespace WPFUtility
     }
     public class RichTextBoxEx : RichTextBox, ITextRange
     {
-        public TextRange GetTextRange() => new TextRange((this).Document.ContentStart, (this).Document.ContentEnd);
+        public  void SetTextRange(string text)
+        {
+            this.Document.Blocks.Clear();
+            this.Document.Blocks.Add(new Paragraph(new Run(text)));
+        }
 
+        public TextRange GetTextRange()
+        {
+            return new TextRange(this.Document.ContentStart,this.Document.ContentEnd);
+        }
     }
 }

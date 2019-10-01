@@ -6,25 +6,40 @@
         xmlns:local="clr-namespace:WPFUtility.Demo"
         xmlns:wpfUtility="clr-namespace:WPFUtility;assembly=WPFUtility"
         xmlns:Interactions="http://schemas.microsoft.com/xaml/behaviors"
+        xmlns:converter="clr-namespace:WPFUtility.Demo.Converter"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
         <TabControl>
-            <TabItem Header="Path Changes">
+            <TabItem Header="Folder Picker">
+
+
+            </TabItem>
+
+
+            <TabItem Header="Title PropertyObjectChanges">
                 <TabItem.DataContext>
                     <local:PathViewModel></local:PathViewModel>
                 </TabItem.DataContext>
                 <StackPanel>
-                    <TextBox  Text="{Binding Path=Path, Source={x:Static Application.Current}, Mode=TwoWay}"></TextBox>
+                    <TextBox  Text="{Binding Path=Path, Source={x:Static Application.Current}, Mode=TwoWay, NotifyOnTargetUpdated=True}"></TextBox>
+                    <Label>ObjectChanges</Label>
                     <ItemsControl ItemsSource="{Binding Collection}"></ItemsControl>
                 </StackPanel>
 
             </TabItem>
             <TabItem Header="TextEditor">
-                <StackPanel>
+                <DockPanel>
+                    <DockPanel.Resources>
+                        <converter:ObjectToTextConverter x:Key="ObjectToTextConverter"></converter:ObjectToTextConverter>
+                    </DockPanel.Resources>
+                    <ToolBar DockPanel.Dock="Top">
+                        <Button Width="100" Click="ButtonBase_OnClick">Fill</Button>
+                        <Rectangle x:Name="Rectangle" Height="30" Width="70" Stroke="AntiqueWhite"></Rectangle>
+                        <wpfUtility:TextBlockEx x:Name="TextBlockEx" ></wpfUtility:TextBlockEx>
+                    </ToolBar>
 
-                    <Rectangle x:Name="Rectangle" Height="30" Width="70"></Rectangle>
-                    <wpfUtility:RichTextEditor >
+                    <wpfUtility:RichTextEditor  x:Name="RichTextEditor">
                         <Interactions:Interaction.Triggers>
                             <Interactions:EventTrigger EventName="ObjectChange">
                                 <wpfUtility:SetPropertyAction PropertyName="Fill" TargetObject="{Binding ElementName=Rectangle}" >
@@ -33,19 +48,23 @@
                                             GradientOrigin="0.5,0.5" 
                                             Center="0.5,0.5" RadiusX="0.5" RadiusY="0.5">
                                             <RadialGradientBrush.GradientStops>
-                                                <GradientStop Color="Yellow" Offset="0" />
-                                                <GradientStop Color="Red" Offset="0.25" />
-                                                <GradientStop Color="Blue" Offset="0.75" />
-                                                <GradientStop Color="Green" Offset="1" />
+                                                <GradientStop Color="White" Offset="0.5" />
+                                                <GradientStop Color="Green" Offset="0.7" />
                                             </RadialGradientBrush.GradientStops>
                                         </RadialGradientBrush>
                                     </wpfUtility:SetPropertyAction.PropertyValue>
                                 </wpfUtility:SetPropertyAction>
+                                <wpfUtility:SetPropertyAction PropertyName="Text" TargetObject="{Binding ElementName=TextBlockEx}" >
+                                    <wpfUtility:SetPropertyAction.PropertyValue>
+                                      <Binding Converter="{StaticResource ObjectToTextConverter}"></Binding>
+                                    </wpfUtility:SetPropertyAction.PropertyValue>
+                                </wpfUtility:SetPropertyAction>
                             </Interactions:EventTrigger>
-                       
+
                         </Interactions:Interaction.Triggers>
                     </wpfUtility:RichTextEditor>
-                </StackPanel>
+                </DockPanel>
+
             </TabItem>
         </TabControl>
     </Grid>

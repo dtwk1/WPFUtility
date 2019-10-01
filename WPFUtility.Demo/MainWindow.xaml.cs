@@ -20,9 +20,20 @@ namespace WPFUtility.Demo
     /// </summary>
     public partial class MainWindow : Window
     {
+        private const string lorumIpsumText =
+            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed eros nunc, auctor a erat fringilla, rhoncus pretium dolor. Sed risus sem, rhoncus vel quam nec, viverra ultrices quam. Duis dapibus luctus egestas. Fusce lacinia ac metus pellentesque maximus. Maecenas sollicitudin lacus non lacus eleifend dictum. Mauris pulvinar porta turpis a accumsan. In dapibus congue turpis, vitae volutpat tellus imperdiet vitae. Aliquam erat volutpat. Quisque augue purus, lacinia non ipsum quis, gravida tempor lorem. Maecenas ullamcorper ultrices neque. In volutpat, ante posuere scelerisque cursus, massa nulla lobortis metus, in molestie tortor eros at magna.";
         public MainWindow()
         {
             InitializeComponent();
+        }
+
+        private async void ButtonBase_OnClick(object sender, RoutedEventArgs e)
+        {
+            await this.Dispatcher.InvokeAsync(
+                () =>
+                    {
+                        this.RichTextEditor.Command.Execute(new DocumentObject{Text= lorumIpsumText, Title = "Lorem Ipsum"});
+                    });
         }
     }
 }
